@@ -6,6 +6,7 @@ import { Request, Response, NextFunction } from 'express'
 import bodyParser from 'body-parser'
 import cors, { CorsOptions } from 'cors'
 import helmet from "helmet";
+import { errorHandler, notFound } from "./app/middleware";
 
 const app: express.Application = express()
 const customHeaders = function (req: Request, res: Response, next: NextFunction) {
@@ -22,7 +23,10 @@ app.use(helmet())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(customHeaders)
+
 app.use(LoggerMiddleware)
+// app.use(notFound)
+app.use(errorHandler)
 
 autoroutes(app, {
   dir: './app/routes'
