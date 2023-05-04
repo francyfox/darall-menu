@@ -1,0 +1,16 @@
+version: '3'
+services:
+  db:
+    container_name: db
+    image: postgres:latest
+    volumes:
+      - ./data/database:/var/lib/postgresql/data
+    networks:
+      - darall
+    environment:
+      POSTGRES_USER: 'fox'
+      POSTGRES_PASSWORD: '123'
+      POSTGRES_DB: 'darall'
+
+networks:
+  darall:

@@ -1,0 +1,8 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+# Project exclude paths
+/darall-menu-client/src/main.js
+/darall-menu-client/vite.config.js
+/index.js
