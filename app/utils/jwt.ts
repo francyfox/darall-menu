@@ -1,6 +1,5 @@
 import { sign } from "jsonwebtoken";
 import { CONFIG } from "../env.config";
-import { db } from "../const";
 
 function generateAccessToken(user: { id: string }): string {
   return sign({ userId: user.id }, CONFIG.JWT_ACCESS_SECRET, {
