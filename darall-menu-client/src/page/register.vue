@@ -4,10 +4,14 @@ import FormRegister from "../components/form/form-register.vue";
 </script>
 
 <template>
-  <div class="container">
-      <h1>Регистрация</h1>
-      <form-register/>
-  </div>
+    <section class="security">
+        <div class="container">
+            <div class="card card-security">
+                <h1>Регистрация</h1>
+                <form-register/>
+            </div>
+        </div>
+    </section>
 </template>
 
 <style scoped>

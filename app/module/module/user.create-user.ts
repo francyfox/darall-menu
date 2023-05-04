@@ -8,7 +8,6 @@ type User = {
   password: string,
 }
 export default async function createUser(userForm: User) {
-
   userForm.password = await hash(userForm.password, 10)
 
   // @ts-ignore

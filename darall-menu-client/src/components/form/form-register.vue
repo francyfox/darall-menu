@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { FormInst, useMessage, NFormItem, NInput, NForm, NButton, NSpace } from 'naive-ui'
 import { router } from "../../routes";
+import { axiosInstance } from "../../main.ts";
 
 const formRef = ref<FormInst | null>(null)
 const message = useMessage()
@@ -9,6 +10,7 @@ const formData = ref({
     email: '',
     password: ''
 })
+const isLoading = ref(false)
 
 const rules = {
     email: {
@@ -17,19 +19,31 @@ const rules = {
     },
     password: {
         required: true,
-        trigger: ['input']
+        trigger: ['input'],
+        min: 6,
+        message: 'Min length is 6'
     }
 }
 
+console.log(axiosInstance.defaults.baseURL)
 function handleSubmit(e: MouseEvent) {
     e.preventDefault()
-    formRef.value?.validate((errors) => {
+    isLoading.value = true
+    formRef.value?.validate(async (errors) => {
         if (!errors) {
-            message.success('Valid')
+            try {
+                const { accessToken, refreshToken } = await axiosInstance.post(`user`, formData.value)
+                message.success('Форма успешно отправлена')
+            } catch (e) {
+                console.log(e)
+                message.error(e.message)
+            }
         } else {
             console.log(errors)
-            message.error('Invalid')
+            message.error('Неверно заполнено')
         }
+
+        isLoading.value = false
     })
 }
 </script>
@@ -42,19 +56,28 @@ function handleSubmit(e: MouseEvent) {
 
     >
         <n-form-item label="Email" path="email">
-            <n-input v-model:value="formData.email" placeholder="Email" />
+            <n-input v-model:value="formData.email"
+                     placeholder="Email"
+            />
         </n-form-item>
         <n-form-item label="Password" path="password">
-            <n-input v-model:value="formData.password" placeholder="Password" />
+            <n-input v-model:value="formData.password"
+                     placeholder="Password"
+                     show-password-on="click"
+                     type="password"
+            />
         </n-form-item>
         <n-form-item>
             <n-space>
-                <n-button @click="handleSubmit" type="primary">
-                    Login
+                <n-button @click="handleSubmit"
+                          type="primary"
+                          :loading="isLoading"
+                >
+                    Регистрация
                 </n-button>
 
-                <n-button @click="router.push('/register')">
-                    Register
+                <n-button @click="router.push('/login')">
+                    Уже есть аккаунт
                 </n-button>
             </n-space>
         </n-form-item>

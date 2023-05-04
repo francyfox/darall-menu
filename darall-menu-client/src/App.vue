@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { NConfigProvider, NMessageProvider } from 'naive-ui'
+import { NConfigProvider, NMessageProvider, darkTheme } from 'naive-ui'
 </script>
 
 <template>
-    <n-config-provider :theme-overrides="{ common: { fontWeightStrong: '600' } }">
+    <n-config-provider :theme="darkTheme" :theme-overrides="{ common: { fontWeightStrong: '600' } }">
         <n-message-provider>
             <router-view v-slot="{ Component }">
                 <transition name="fade">

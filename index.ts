@@ -14,11 +14,11 @@ const customHeaders = function (req: Request, res: Response, next: NextFunction)
   next()
 }
 
-const corsOpt: CorsOptions = {
-  origin: `http://localhost:${CONFIG.EXPRESS_PORT}`
-}
+// const corsOpt: CorsOptions = {
+//   origin: [`http://localhost:${CONFIG.EXPRESS_PORT}`, 'http://localhost:5173/']
+// }
 
-app.use(cors(corsOpt))
+app.use(cors({origin: '*'}))
 app.use(helmet())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
