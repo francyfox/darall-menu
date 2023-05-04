@@ -6,3 +6,5 @@ node_modules
 /darall-menu-client/src/main.js
 /darall-menu-client/vite.config.js
 /index.js
+
+.idea

@@ -1,22 +1,34 @@
 import express from 'express'
+import autoroutes from 'express-automatic-routes'
 import { CONFIG } from "./app/env.config";
+import { Logger, LoggerMiddleware } from "./app/module/logger/logger";
+import { Request, Response, NextFunction } from 'express'
+import bodyParser from 'body-parser'
+import cors, { CorsOptions } from 'cors'
+import helmet from "helmet";
 
 const app: express.Application = express()
-const port: number = CONFIG.EXPRESS_PORT
+const customHeaders = function (req: Request, res: Response, next: NextFunction) {
+  res.setHeader('Last-Modified', (new Date()).toUTCString())
+  next()
+}
 
-app.get('/', (_req, _res) => {
-  _res.send("TypeScript With Express");
+const corsOpt: CorsOptions = {
+  origin: `http://localhost:${CONFIG.EXPRESS_PORT}`
+}
+
+app.use(cors(corsOpt))
+app.use(helmet())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(customHeaders)
+app.use(LoggerMiddleware)
+
+autoroutes(app, {
+  dir: './app/routes'
 })
 
-app.post('/api/user/token', (_req, _res) => {
-  const { username, password } = _req.body
-})
-
-app.get('/api/user/:id', (_req, _res) => {
-
-})
-
-app.listen(port, () => {
-  console.log(`TypeScript with Express
-         http://localhost:${port}/`);
+app.listen(CONFIG.EXPRESS_PORT, () => {
+  Logger.debug(`Server is up and running @
+         http://localhost:${CONFIG.EXPRESS_PORT}/`)
 })
