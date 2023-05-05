@@ -15,7 +15,7 @@ export default async function createUser(userForm: User) {
     data: userForm
   })
   const id = uuidv4()
-  const {accessToken, refreshToken} = generateTokens(user, id);
+  const { accessToken, refreshToken} = generateTokens(user, id);
 
   await db.refreshToken.create({
     data: {

@@ -12,7 +12,6 @@ model RefreshToken {
   hashedToken String
   userId      String
   User        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  revoked     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -26,7 +25,29 @@ model User {
   updatedAt     DateTime       @updatedAt
 }
 
+model Product {
+  id         String   @id @unique @default(uuid())
+  price      Float
+  contain    String
+  categoryId String
+  imageId    String   @unique
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  image      Image    @relation(fields: [imageId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
 
+model Category {
+  id        String    @id @unique @default(uuid())
+  name      String
+  products  Product[]
+}
+
+model Image {
+  id        String  @id @unique @default(uuid())
+  output    String
+  product   Product?
+}
 
 /// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
 // model table_name {

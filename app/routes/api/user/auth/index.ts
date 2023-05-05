@@ -1,22 +1,17 @@
-import { Application, Request, Response } from 'express'
+import { Application, NextFunction, Request, Response } from 'express'
 import { Resource } from 'express-automatic-routes'
-import { db } from "../../../../const";
+import { userAuth } from "../../../../module/module/user.auth";
 export default (express: Application) => <Resource> {
-  post: async (request: Request, response: Response) => {
-    const {email, password} = request.body as { email: string, password: string }
-
-    if (!email || !password) {
-      response.status(400);
-      throw new Error('You must provide an email and a password.');
+  post: async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const {email, password} = request.body as { email: string, password: string }
+      const { accessToken, refreshToken} = await userAuth(response, email, password)
+      response.status(201).json({
+        accessToken,
+        refreshToken
+      });
+    } catch (e) {
+      next(e)
     }
-
-    const user = await db.user.findUnique({
-      where: {
-        // @ts-ignore
-        email
-      }
-    })
-
-    response.status(201).send(`its ok ${email}`)
   }
 }
