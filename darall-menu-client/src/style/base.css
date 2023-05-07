@@ -154,9 +154,8 @@ h1 {
     margin-bottom: 0;
 }
 
-svg {
-    width: 32px;
-    height: 32px;
+.xicon {
+    margin-right: 5px;
 }
 
 em {

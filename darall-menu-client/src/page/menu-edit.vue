@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import ProductTable from "../components/product-table.vue";
 import CategoryList from "../components/category-list.vue";
-import { NButton, NSpace } from 'naive-ui'
+import { NSpace, NButton } from 'naive-ui'
+import { router } from "../routes";
 </script>
 
 <template>
@@ -10,16 +11,29 @@ import { NButton, NSpace } from 'naive-ui'
       <div class="container">
           <div class="col">
               <div class="row _h-gap-md _h-ai-c _h-jc-sb _h-mb-2">
-                  <h1>Редактировать продукты</h1>
+                  <h1>Редактор меню</h1>
+
+                  <n-space>
+                      <n-button type="primary"
+                                @click="router.push('/')"
+                      >
+                          Вернуться в меню
+                      </n-button>
+                  </n-space>
               </div>
               <div class="row _h-gap-md">
                   <div class="col">
                       <div class="card">
                           <n-space vertical :size="12">
-                              <n-button>
-                                  Добавить категорию
-                              </n-button>
-                              <category-list/>
+                              <div class="_t-fz-h4">Категории</div>
+
+                              <Suspense>
+                                  <category-list/>
+                                  <template #fallback>
+                                      Загрузка...
+                                  </template>
+                              </Suspense>
+
                           </n-space>
                       </div>
                   </div>

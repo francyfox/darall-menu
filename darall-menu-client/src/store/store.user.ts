@@ -28,8 +28,18 @@ export const useUserStore = defineStore('user', () => {
     ls.set('user', lsData)
   }
 
+  function logOut () {
+    ls.clear()
+    user.value = {
+      refreshToken: '',
+      accessToken: '',
+      email: ''
+    }
+  }
+
   return {
     user,
-    updateLS
+    updateLS,
+    logOut
   }
 })

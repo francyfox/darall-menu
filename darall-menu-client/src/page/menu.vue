@@ -1,6 +1,13 @@
 <script setup lang="ts">
-
+import { NButton, NSpace } from 'naive-ui'
+import { LogOutFilled, AccountCircleSharp, MenuBookFilled } from '@vicons/material'
+import { Icon } from '@vicons/utils'
 import { router } from "../routes";
+import { useUserStore } from "../store/store.user.ts";
+import { storeToRefs } from "pinia";
+import UserSettings from "../components/user-settings.vue";
+const store = useUserStore()
+const { user } = storeToRefs(store)
 </script>
 
 <template>
@@ -9,13 +16,17 @@ import { router } from "../routes";
           <div class="col">
               <div class="row _h-gap-md _h-jc-sb _h-ai-c">
                   <h1 class="h1">Меню</h1>
-                  <ul>
-                      <li>
-                          <a href="#" @click.prevent="router.push('/menu-edit')">
-                              Редактировать
-                          </a>
-                      </li>
-                  </ul>
+                  <n-space>
+                      <n-button type="primary"
+                                @click="router.push('/menu-edit')"
+                      >
+                          <Icon size="24">
+                              <MenuBookFilled/>
+                          </Icon>
+                          Редактировать
+                      </n-button>
+                      <user-settings :email="user.email"/>
+                  </n-space>
               </div>
 
               <div class="menu--card-list">
