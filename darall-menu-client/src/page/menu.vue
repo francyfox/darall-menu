@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NButton, NSpace } from 'naive-ui'
-import { LogOutFilled, AccountCircleSharp, MenuBookFilled } from '@vicons/material'
+import { MenuBookFilled } from '@vicons/material'
 import { Icon } from '@vicons/utils'
 import { router } from "../routes";
 import { useUserStore } from "../store/store.user.ts";

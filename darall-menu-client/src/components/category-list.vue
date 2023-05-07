@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LibraryAddSharp } from "@vicons/material";
+import { LibraryAddSharp, DeleteRound } from "@vicons/material";
 import { NDataTable, DataTableColumns, DataTableRowKey, NButton, NInput, NSpace, useMessage } from "naive-ui";
 import { Icon } from "@vicons/utils";
 import { axiosInstance } from "../main.ts";
@@ -8,14 +8,60 @@ import { ref, h } from "vue";
 const message = useMessage()
 const categoryName = ref('')
 const categoryList = ref([])
-const checkedRowKeysRef = ref<DataTableRowKey[]>([])
+const checkedRowKeys = ref<DataTableRowKey[]>([])
 const collection = await getCategoryCollection()
-categoryList.value = collection
+categoryList.value = collection.map((element, index) => ({
+    ...element,
+    key: index
+}))
+
+
+async function deleteManyRows() {
+    try {
+        const listId = checkedRowKeys.value.map((key) => {
+            return categoryList.value[key].id
+        })
+
+        await axiosInstance.post(`/category/bulk/delete`, { listId })
+        for (const key: number of checkedRowKeys.value) {
+            categoryList.value.splice(key, 1)
+        }
+
+        message.info('Категории удалены')
+    } catch (e) {
+        message.info(e)
+    }
+
+}
+
+async function updateRow(index: number, id: string, name: string) {
+    try {
+        await axiosInstance.patch(`/category/${id}`, { name })
+        message.info(`Категория #${index + 1} обновлена`)
+    } catch (e) {
+        message.info(e)
+    }
+
+}
+
 
 type RowData = { id: string, name: string }
 const createColumns = (): DataTableColumns<RowData> => [
     {
-        type: 'selection'
+        type: 'selection',
+        options: [
+            'all',
+            'none',
+            {
+                label: 'Select first 2 rows',
+                key: 'f2',
+                onSelect: (pageData) => {
+                    checkedRowKeys.value = pageData
+                        .map((row, index) => index)
+                        .slice(0, 2)
+                }
+            }
+        ],
     },
     {
         title: '№',
@@ -32,6 +78,11 @@ const createColumns = (): DataTableColumns<RowData> => [
                 value: row.name,
                 onUpdateValue (v) {
                     categoryList.value[index].name = v
+                },
+                onBlur () {
+                    const id = categoryList.value[index].id
+                    const name = categoryList.value[index].name
+                    updateRow(index, id, name)
                 }
             })
         }
@@ -42,7 +93,7 @@ const columns = createColumns()
 
 
 function handleCheck (rowKeys: DataTableRowKey[]) {
-    checkedRowKeysRef.value = rowKeys
+    checkedRowKeys.value = rowKeys
 }
 const addCategory = async () => {
     try {
@@ -81,19 +132,20 @@ async function getCategoryCollection() {
             </n-button>
         </n-space>
         <n-space>
-            <n-button type="info">
-                Обновить
-            </n-button>
-            <n-button type="error">
-                Удалить
+            <n-button @click="deleteManyRows"
+            >
+                <Icon :size="24">
+                    <DeleteRound/>
+                </Icon>
+                Удалить выбранные
             </n-button>
         </n-space>
         <ul class="col _h-gap-sm">
             <n-data-table
+                v-model:checked-row-keys="checkedRowKeys"
                 :columns="columns"
                 :data="categoryList"
-                :row-key="(row: RowData) => row.name"
-                :pagination="{ pageSize: 10 }"
+                :pagination="{ pageSize: 6 }"
                 @update:checked-row-keys="handleCheck"
             />
         </ul>

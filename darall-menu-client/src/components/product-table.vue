@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineComponent, ref } from 'vue'
 import { NSpace, NDataTable, NButton } from 'naive-ui'
 
 const columns = [

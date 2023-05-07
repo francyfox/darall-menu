@@ -1,6 +1,11 @@
 import { Application, NextFunction, Request, Response } from 'express'
 import { Resource } from 'express-automatic-routes'
 import { db } from "../../../const";
+
+type CategoryItem = {
+  id: string,
+  name: string
+}
 export default (express: Application) => <Resource> {
   get: async (request: Request, response: Response, next: NextFunction) => {
     try {
@@ -27,31 +32,6 @@ export default (express: Application) => <Resource> {
 
       const category = await db.category.create({
         data: fields
-      })
-
-      response.status(200).json({
-        item: category
-      })
-    } catch (e) {
-      next(e)
-    }
-  },
-
-  delete: async (request: Request, response: Response, next: NextFunction) => {
-    try {
-      const { listId } = request.body as { listId: string[] }
-
-      if (!listId) {
-        response.status(400)
-        throw new Error('Missing field listId')
-      }
-
-      const category = await db.category.deleteMany({
-        where: {
-          id: {
-            in: listId
-          }
-        }
       })
 
       response.status(200).json({
