@@ -5,7 +5,7 @@ import FormRegister from "../components/form/form-register.vue";
 
 <template>
     <section class="security">
-        <div class="container">
+        <div class="container _h-jc-c">
             <div class="card card-security">
                 <h1>Регистрация</h1>
                 <form-register/>

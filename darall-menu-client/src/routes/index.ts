@@ -2,6 +2,9 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Menu from "../page/menu.vue";
 import Auth from "../page/auth.vue";
 import Register from "../page/register.vue";
+import MenuEdit from "../page/menu-edit.vue";
+import { validateUserTokens } from "./middleware.ts";
+
 
 const routes = [
   {
@@ -10,11 +13,16 @@ const routes = [
   },
   {
     path: '/login',
-    component: Auth
+    component: Auth,
   },
   {
     path: '/register',
-    component: Register
+    component: Register,
+  },
+  {
+    path: '/menu-edit',
+    component: MenuEdit,
+    beforeEnter: validateUserTokens
   },
 ]
 

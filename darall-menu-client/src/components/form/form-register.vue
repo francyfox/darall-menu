@@ -15,13 +15,15 @@ const isLoading = ref(false)
 const rules = {
     email: {
         required: true,
+        pattern: '[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$',
+        message: 'Неверно указан email',
         trigger: ['input']
     },
     password: {
         required: true,
         trigger: ['input'],
         min: 6,
-        message: 'Min length is 6'
+        message: 'Минимум 6 символов'
     }
 }
 
@@ -33,7 +35,9 @@ function handleSubmit(e: MouseEvent) {
         if (!errors) {
             try {
                 const { accessToken, refreshToken } = await axiosInstance.post(`user`, formData.value)
+
                 message.success('Форма успешно отправлена')
+                await router.push('/menu-edit')
             } catch (e) {
                 console.log(e)
                 message.error(e.message)
@@ -57,12 +61,12 @@ function handleSubmit(e: MouseEvent) {
     >
         <n-form-item label="Email" path="email">
             <n-input v-model:value="formData.email"
-                     placeholder="Email"
+                     placeholder="test@gmail.com"
             />
         </n-form-item>
-        <n-form-item label="Password" path="password">
+        <n-form-item label="Пароль" path="password">
             <n-input v-model:value="formData.password"
-                     placeholder="Password"
+                     placeholder=""
                      show-password-on="click"
                      type="password"
             />

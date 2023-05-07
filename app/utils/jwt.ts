@@ -3,16 +3,23 @@ import { CONFIG } from "../env.config";
 
 function generateAccessToken(user: { id: string }): string {
   return sign({ userId: user.id }, CONFIG.JWT_ACCESS_SECRET, {
-    expiresIn: '5m',
+    expiresIn: '20m',
   });
 }
 
-export function generateRefreshToken(user: { id: string }, jti: string): string {
-  return sign({
+export type jwtPayload = {
+  userId: string,
+  tokenId: string
+}
+
+export function generateRefreshToken(user: { id: string }, tokenId: string): string {
+  const payload: jwtPayload = {
     userId: user.id,
-    jti
-  }, CONFIG.JWT_REFRESH_SECRET, {
-    expiresIn: '4h',
+    tokenId
+  }
+
+  return sign(payload, CONFIG.JWT_REFRESH_SECRET, {
+    expiresIn: '12h',
   });
 }
 
