@@ -14,6 +14,17 @@ import {
 } from 'naive-ui'
 import type { UploadFileInfo } from 'naive-ui'
 import { Ref, ref } from "vue";
+import { useMenuStore } from "../../store/store.menu.ts";
+import { storeToRefs } from "pinia";
+
+const store = useMenuStore()
+const { collectionRef } = storeToRefs(store)
+const categoryOptions = ref([])
+
+categoryOptions.value = collectionRef.value.map((i) => ({
+    label: i.name,
+    value: i.id
+}))
 
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)
@@ -28,17 +39,6 @@ type Product = {
 const formData: Ref<{ product: Product }> = ref({
     product: {}
 })
-
-const categoryOptions = [
-    {
-        label: 'Drive My Car',
-        value: 'song1'
-    },
-    {
-        label: 'Norwegian Wood',
-        value: 'song2'
-    },
-]
 const rules: FormRules = {
     name: [
         {
