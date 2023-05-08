@@ -18,6 +18,8 @@ const customHeaders = function (req: Request, res: Response, next: NextFunction)
 //   origin: [`http://localhost:${CONFIG.EXPRESS_PORT}`, 'http://localhost:5173/']
 // }
 
+console.log(`${__dirname}/uploads`)
+app.use(express.static('public'))
 app.use(cors({origin: '*'}))
 app.use(helmet())
 app.use(bodyParser.json())

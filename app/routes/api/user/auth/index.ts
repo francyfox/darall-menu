@@ -1,6 +1,6 @@
 import { Application, NextFunction, Request, Response } from 'express'
 import { Resource } from 'express-automatic-routes'
-import { userAuth } from "../../../../module/module/user.auth";
+import { userAuth } from "../../../../module/user/user.auth";
 export default (express: Application) => <Resource> {
   post: async (request: Request, response: Response, next: NextFunction) => {
     try {

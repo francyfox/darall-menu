@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { NSpace, NDataTable, NButton } from 'naive-ui'
+import { NSpace, NDataTable, NButton, NModal } from 'naive-ui'
+import { ref } from "vue";
+import FormProduct from "./form/form-product.vue";
 
+const isModalShow = ref(false)
 const columns = [
   {
     title: 'Название',
@@ -36,17 +39,32 @@ const data = [
 </script>
 
 <template>
-    <n-space vertical :size="12">
-        <n-space>
-            <n-button @click="sortName">Добавить товар</n-button>
-        </n-space>
-        <n-data-table
+    <div class="product-table">
+        <n-space vertical :size="12">
+            <n-space>
+                <n-button @click="isModalShow = true">Добавить товар</n-button>
+            </n-space>
+            <n-data-table
                 ref="dataTableInst"
                 :columns="columns"
                 :data="data"
-                :pagination="pagination"
-        />
-    </n-space>
+                :pagination="{ pageSize: 6 }"
+            />
+        </n-space>
+
+        <n-modal
+            v-model:show="isModalShow "
+            class="custom-card"
+            preset="card"
+            :style="{ width: '600px'}"
+            title="Добавить товар"
+            :bordered="false"
+            size="huge"
+        >
+           <form-product/>
+        </n-modal>
+    </div>
+
 </template>
 
 <style scoped>

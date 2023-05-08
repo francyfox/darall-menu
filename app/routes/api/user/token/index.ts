@@ -1,6 +1,6 @@
 import { Application, NextFunction, Request, Response } from 'express'
 import { Resource } from 'express-automatic-routes'
-import { userTokenRefresh } from "../../../../module/module/user.token-refresh";
+import { userTokenRefresh } from "../../../../module/user/user.token-refresh";
 export default (express: Application) => <Resource> {
   post: async (request: Request, response: Response, next: NextFunction) => {
     try {
