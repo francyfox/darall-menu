@@ -18,8 +18,24 @@ export const useMenuStore = defineStore('menu', () => {
     }))
   }
 
+  async function getProductList() {
+    const params = {
+      include: {
+        image: true
+      }
+    }
+    const response = await axiosInstance.get(`/product`, { params })
+    const { collections} = response.data as { collections: [], count: number }
+
+    return collections.map((element: CategoryItem, index) => ({
+      ...element,
+      key: index
+    }))
+  }
+
   return {
     collectionRef,
-    getCategoryCollection
+    getCategoryCollection,
+    getProductList
   }
 })

@@ -1,10 +1,29 @@
 <script setup lang="ts">
-import { NSpace, NDataTable, NButton, NModal } from 'naive-ui'
-import { ref } from "vue";
+import { NSpace, NDataTable, NButton, NModal, NImage } from 'naive-ui'
+import { ref, h } from "vue";
 import FormProduct from "./form/form-product.vue";
+import { useMenuStore } from "../store/store.menu.ts";
 
+const store = useMenuStore()
+const { getProductList } = store
 const isModalShow = ref(false)
+const tableData = ref()
 const columns = [
+    {
+        title: '№',
+        key: 'key',
+        render: (_, index) => {
+            return `#${index + 1}`
+        }
+    },
+    {
+        title: 'Фото',
+        key: 'image',
+        render: (_, index) => {
+            console.log(tableData.value[index])
+            return h(NImage, { src: tableData.value[index].image.link, width: 25 })
+        }
+    },
   {
     title: 'Название',
     key: 'name'
@@ -12,30 +31,14 @@ const columns = [
   {
       title: 'Состав',
       key: 'contain'
-  }
-]
-
-const data = [
-  {
-    key: 0,
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    chinese: 98,
-    math: 60,
-    english: 70
   },
-  {
-    key: 1,
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    chinese: 98,
-    math: 66,
-    english: 89
-  }
+    {
+        title: 'Цена',
+        key: 'price'
+    }
 ]
 
+tableData.value = await getProductList()
 </script>
 
 <template>
@@ -47,7 +50,7 @@ const data = [
             <n-data-table
                 ref="dataTableInst"
                 :columns="columns"
-                :data="data"
+                :data="tableData"
                 :pagination="{ pageSize: 6 }"
             />
         </n-space>

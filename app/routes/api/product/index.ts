@@ -1,11 +1,10 @@
 import { Application, NextFunction, Request, Response } from 'express'
 import { Resource } from 'express-automatic-routes'
 import { db } from "../../../const";
-import type { Product } from '@prisma/client'
 export default (express: Application) => <Resource> {
   get: async (request: Request, response: Response, next: NextFunction) => {
     try {
-      let filter = (request.params.filter) ? JSON.parse(request.params.filter) : null
+      const filter: any = (request.query) ? request.query : null
       const collections = await db.product.findMany(filter)
 
       response.status(200).json({
@@ -18,14 +17,14 @@ export default (express: Application) => <Resource> {
   },
 
   post: async (request: Request, response: Response, next: NextFunction) => {
-    const ProductRequired: string[] = ['name', 'price', 'categoryId']
+    const ProductRequired = ['name', 'price', 'category']
 
     try {
-      const fields = request.body as Product
+      const fields = request.body
+      fields.price = Number(fields.price)
 
       for (const field of [...ProductRequired]) {
-        if (field) {
-          console.log(field)
+        if (!fields[field]) {
           response.status(400)
           throw new Error(`Field ${field} is empty`)
         }

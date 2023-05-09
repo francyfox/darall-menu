@@ -13,9 +13,10 @@ import {
     useMessage
 } from 'naive-ui'
 import type { UploadFileInfo } from 'naive-ui'
-import { Ref, ref } from "vue";
+import { Ref, ref, toRaw } from "vue";
 import { useMenuStore } from "../../store/store.menu.ts";
 import { storeToRefs } from "pinia";
+import { axiosInstance } from "../../main.ts";
 
 const store = useMenuStore()
 const { collectionRef } = storeToRefs(store)
@@ -33,11 +34,21 @@ type Product = {
     name: string
     price: number
     contain: string
-    categoryId: string
-    imageId?: string
+    category: { connect: { id: string } }
+    image: { connect: { id: string }}
 }
 const formData: Ref<{ product: Product }> = ref({
-    product: {}
+    product: {
+        name: '',
+        price: 0,
+        contain: '',
+        category: {
+            connect: { id: ''}
+        },
+        image: {
+            connect: { id: ''}
+        }
+    }
 })
 const rules: FormRules = {
     name: [
@@ -52,15 +63,26 @@ const rules: FormRules = {
             message: 'Поле цена не заполнено'
         }
     ],
-    categoryId: [
+    category: [
         {
             required: true,
             message: 'Выберите категорию'
         }
     ],
+    file: [
+        {
+            required: true,
+            message: 'Выберите фото'
+        }
+    ]
 }
 
-
+function uploadFinish({ file, event }: { file: UploadFileInfo, event?: ProgressEvent }) {
+    const image = JSON.parse((event?.target as XMLHttpRequest).response).item
+    message.success(`Картинка ${image.name} загружена`)
+    formData.value.product.image.connect.id = image['id']
+    return file
+}
 function formatCurrency(value: number | null) {
     if (value === null) return ''
     return value.toLocaleString('en-US')
@@ -75,6 +97,7 @@ async function handleSubmit(e: MouseEvent) {
 
     try {
         await formRef.value?.validate()
+        await axiosInstance.post(`/product` , formData.value.product)
         message.success('Форма отправлена!')
     } catch (e) {
         message.error(`Форма заполнена неверно ${e.message}`)
@@ -88,6 +111,8 @@ async function handleSubmit(e: MouseEvent) {
         <n-upload
             action="http://localhost:3000/api/image"
             :default-file-list="fileList"
+            :multiple="false"
+            @finish="uploadFinish"
             list-type="image-card"
             name="file"
         >
@@ -110,8 +135,8 @@ async function handleSubmit(e: MouseEvent) {
                             @keydown.enter.prevent
             />
         </n-form-item>
-        <n-form-item path="categoryId" label="Категория">
-            <n-select v-model:value="formData.product.categoryId"
+        <n-form-item path="category.connect" label="Категория">
+            <n-select v-model:value="formData.product.category.connect.id"
                       placeholder="Выберите категорию"
                      :options="categoryOptions"
             />

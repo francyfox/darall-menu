@@ -39,7 +39,12 @@ import { router } from "../routes";
                   </div>
                   <div class="col">
                       <div class="card">
-                          <product-table/>
+                          <Suspense>
+                              <product-table/>
+                              <template #fallback>
+                                  Загрузка...
+                              </template>
+                          </Suspense>
                       </div>
                   </div>
               </div>

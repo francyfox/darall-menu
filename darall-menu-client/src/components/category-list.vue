@@ -51,16 +51,7 @@ const createColumns = (): DataTableColumns<RowData> => [
         type: 'selection',
         options: [
             'all',
-            'none',
-            {
-                label: 'Select first 2 rows',
-                key: 'f2',
-                onSelect: (pageData) => {
-                    checkedRowKeys.value = pageData
-                        .map((row, index) => index)
-                        .slice(0, 2)
-                }
-            }
+            'none'
         ],
     },
     {
@@ -139,6 +130,9 @@ const addCategory = async () => {
                 @update:checked-row-keys="handleCheck"
             />
         </ul>
+        <small>
+            *Сохрание при клике вне поля ввода
+        </small>
     </n-space>
 </template>
 
