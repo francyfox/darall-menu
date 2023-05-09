@@ -16,6 +16,7 @@ import { Icon } from "@vicons/utils";
 import { axiosInstance } from "../main.ts";
 import { ref, h } from "vue";
 import { storeToRefs} from "pinia";
+import { router } from "../routes";
 
 const store = useMenuStore()
 const { getCategoryCollection } = store
@@ -121,8 +122,8 @@ const addCategory = async () => {
     try {
         const response = await axiosInstance.post(`/category`, category.value)
         const { item } = response.data
-        collectionRef.value.push(item)
         message.create('Добавлена категория')
+        window.location.reload()
     } catch (e) {
         message.error(e)
     }

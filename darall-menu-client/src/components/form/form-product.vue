@@ -17,6 +17,7 @@ import { Ref, ref, toRaw } from "vue";
 import { useMenuStore } from "../../store/store.menu.ts";
 import { storeToRefs } from "pinia";
 import { axiosInstance } from "../../main.ts";
+import { router } from "../../routes";
 
 const store = useMenuStore()
 const { collectionRef } = storeToRefs(store)
@@ -99,6 +100,7 @@ async function handleSubmit(e: MouseEvent) {
         await formRef.value?.validate()
         await axiosInstance.post(`/product` , formData.value.product)
         message.success('Форма отправлена!')
+        window.location.reload()
     } catch (e) {
         message.error(`Форма заполнена неверно ${e.message}`)
     }

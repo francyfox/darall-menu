@@ -27,7 +27,6 @@ const columns = [
     },
     {
         type: 'expand',
-        expandable: (rowData) => rowData.name !== 'Jim Green',
         renderExpand: (rowData, index) => {
             return h(NInput, {
                 value: rowData.contain,
@@ -39,7 +38,7 @@ const columns = [
                 onBlur () {
                     const id = rowData.id
                     const contain = rowData.contain
-                    updateRow(index, id, contain)
+                    updateRow(index, id, { contain })
                 }
             })
         }
@@ -71,7 +70,7 @@ const columns = [
               onBlur () {
                   const id = tableData.value[index].id
                   const name = tableData.value[index].name
-                  updateRow(index, id, name)
+                  updateRow(index, id, { name })
               }
           })
       }
@@ -88,7 +87,7 @@ const columns = [
                 onBlur () {
                     const id = tableData.value[index].id
                     const price = tableData.value[index].price
-                    updateRow(index, id, price)
+                    updateRow(index, id, { price })
                 }
             })
         }
@@ -100,6 +99,8 @@ async function deleteManyRows() {
         const listId = checkedRowKeys.value.map((key) => {
             return tableData.value[key].id
         })
+
+        console.log(checkedRowKeys.value)
 
         await axiosInstance.post(`/product/bulk/delete`, { listId })
         for (const key: number of checkedRowKeys.value) {
@@ -113,13 +114,17 @@ async function deleteManyRows() {
 
 }
 
-async function updateRow(index: number, id: string, name: string) {
+async function updateRow(index: number, id: string, data: object) {
     try {
-        await axiosInstance.patch(`/product/${id}`, { name })
+        await axiosInstance.patch(`/product/${id}`, data)
         message.info(`Товар #${index + 1} обновлен`)
     } catch (e) {
         message.info(e)
     }
+
+}
+
+function filterTable() {
 
 }
 </script>
@@ -138,6 +143,7 @@ async function updateRow(index: number, id: string, name: string) {
                 </n-button>
             </n-space>
             <n-data-table
+                v-model:checked-row-keys="checkedRowKeys"
                 ref="dataTableInst"
                 :columns="columns"
                 :data="tableData"

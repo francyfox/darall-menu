@@ -6,9 +6,9 @@ import { router } from "../routes";
 </script>
 
 <template>
-  <section class="menu-edit">
+  <section class="menu">
 
-      <div class="container">
+      <div class="container _h-ai-c">
           <div class="col _h-w-100">
               <div class="row _h-gap-md _h-ai-c _h-jc-sb _h-mb-2">
                   <h1>Редактор меню</h1>
