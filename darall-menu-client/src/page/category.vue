@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { NButton, NSpace } from 'naive-ui'
-import { MenuBookFilled } from '@vicons/material'
-import { Icon } from '@vicons/utils'
+import ProductCards from "../components/product-cards.vue";
 import { router } from "../routes";
+import UserSettings from "../components/user-settings.vue";
+import { MenuBookFilled } from "@vicons/material";
+import { NButton, NSpace } from "naive-ui";
+import { Icon } from "@vicons/utils";
 import { useUserStore } from "../store/store.user.ts";
 import { storeToRefs } from "pinia";
-import UserSettings from "../components/user-settings.vue";
-import MenuCard from "../components/menu-card.vue";
+
 const store = useUserStore()
 const { user } = storeToRefs(store)
 </script>
@@ -18,6 +19,9 @@ const { user } = storeToRefs(store)
               <div class="row _h-gap-md _h-jc-sb _h-ai-c">
                   <h1 class="h1">Меню</h1>
                   <n-space>
+                      <n-button @click="router.push(`/`)" type="warning">
+                          Назад
+                      </n-button>
                       <n-button type="primary"
                                 @click="router.push('/menu-edit')"
                       >
@@ -30,14 +34,12 @@ const { user } = storeToRefs(store)
                   </n-space>
               </div>
 
-              <div class="menu--card-list">
-                  <Suspense>
-                      <menu-card/>
-                      <template #fallback>
-                          Загрузка...
-                      </template>
-                  </Suspense>
-              </div>
+              <Suspense>
+                  <product-cards/>
+                  <template #fallback>
+                      Загрузка...
+                  </template>
+              </Suspense>
           </div>
       </div>
   </section>

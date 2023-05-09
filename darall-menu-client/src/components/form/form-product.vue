@@ -115,6 +115,7 @@ async function handleSubmit(e: MouseEvent) {
             @finish="uploadFinish"
             list-type="image-card"
             name="file"
+            :max="1"
         >
             Добавить фото
         </n-upload>

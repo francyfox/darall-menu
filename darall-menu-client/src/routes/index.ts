@@ -3,6 +3,7 @@ import Menu from "../page/menu.vue";
 import Auth from "../page/auth.vue";
 import Register from "../page/register.vue";
 import MenuEdit from "../page/menu-edit.vue";
+import Category from "../page/category.vue";
 import { validateUserTokens } from "./middleware.ts";
 
 
@@ -23,6 +24,10 @@ const routes = [
     path: '/menu-edit',
     component: MenuEdit,
     beforeEnter: validateUserTokens
+  },
+  {
+    path: '/category/:id',
+    component: Category
   },
 ]
 

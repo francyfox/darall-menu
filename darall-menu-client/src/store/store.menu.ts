@@ -4,12 +4,17 @@ import { axiosInstance } from "../main.ts";
 
 export type CategoryItem = {
   id: string
-  name: string
+  name: string,
+  image: {
+    id: string,
+    name: string,
+    link: string
+  }
 }
 export const useMenuStore = defineStore('menu', () => {
   const collectionRef: Ref<CategoryItem[]> = ref([])
-  async function getCategoryCollection() {
-    const response = await axiosInstance.get(`/category`)
+  async function getCategoryCollection(params?: object) {
+    const response = await axiosInstance.get(`/category`, { params })
     const { collections} = response.data as { collections: [], count: number }
 
     collectionRef.value = collections.map((element: CategoryItem, index) => ({
@@ -18,12 +23,7 @@ export const useMenuStore = defineStore('menu', () => {
     }))
   }
 
-  async function getProductList() {
-    const params = {
-      include: {
-        image: true
-      }
-    }
+  async function getProductList(params: object) {
     const response = await axiosInstance.get(`/product`, { params })
     const { collections} = response.data as { collections: [], count: number }
 

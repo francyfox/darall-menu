@@ -9,7 +9,7 @@ type CategoryItem = {
 export default (express: Application) => <Resource> {
   get: async (request: Request, response: Response, next: NextFunction) => {
     try {
-      let filter = (request.params.filter) ? JSON.parse(request.params.filter) : null
+      const filter: any = (request.query) ? request.query : null
       const collections = await db.category.findMany(filter)
 
       response.status(200).json({

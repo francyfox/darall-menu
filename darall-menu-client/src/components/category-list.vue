@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { useMenuStore } from "../store/store.menu.ts";
 import { LibraryAddSharp, DeleteRound } from "@vicons/material";
-import { NDataTable, DataTableColumns, DataTableRowKey, NButton, NInput, NSpace, useMessage } from "naive-ui";
+import {
+    NDataTable,
+    DataTableColumns,
+    DataTableRowKey,
+    NButton,
+    NInput,
+    NSpace,
+    useMessage,
+    NModal,
+    NUpload, NDivider, UploadFileInfo, NImage
+} from "naive-ui";
 import { Icon } from "@vicons/utils";
 import { axiosInstance } from "../main.ts";
 import { ref, h } from "vue";
@@ -10,11 +20,24 @@ import { storeToRefs} from "pinia";
 const store = useMenuStore()
 const { getCategoryCollection } = store
 const { collectionRef } = storeToRefs(store)
-await getCategoryCollection()
+await getCategoryCollection({ include: { image: true } })
+
+const isModalShow = ref(false)
+const fileList = ref<UploadFileInfo[]>([])
 
 const message = useMessage()
-const categoryName = ref('')
+const category = ref({
+    name: '',
+    image: { connect: { id: ''}}
+})
 const checkedRowKeys = ref<DataTableRowKey[]>([])
+
+function uploadFinish({ file, event }: { file: UploadFileInfo, event?: ProgressEvent }) {
+    const image = JSON.parse((event?.target as XMLHttpRequest).response).item
+    message.success(`Картинка ${image.name} загружена`)
+    category.value.image.connect.id = image.id
+    return file
+}
 
 async function deleteManyRows() {
     try {
@@ -62,6 +85,14 @@ const createColumns = (): DataTableColumns<RowData> => [
         }
     },
     {
+        title: 'Фото',
+        key: 'image',
+        render: (_, index) => {
+            const src = collectionRef.value[index].image?.link ?? '/empty.jpeg'
+            return h(NImage, { src, width: 25 })
+        }
+    },
+    {
         title: 'Название',
         key: 'name',
         render (row, index) {
@@ -88,7 +119,7 @@ function handleCheck (rowKeys: DataTableRowKey[]) {
 }
 const addCategory = async () => {
     try {
-        const response = await axiosInstance.post(`/category`, { name: categoryName.value })
+        const response = await axiosInstance.post(`/category`, category.value)
         const { item } = response.data
         collectionRef.value.push(item)
         message.create('Добавлена категория')
@@ -102,17 +133,9 @@ const addCategory = async () => {
 <template>
     <n-space vertical :size="12">
         <n-space>
-            <n-input v-model:value="categoryName"
-                     placeholder="Название"
-            />
-            <n-button @click="addCategory">
-                <Icon size="24">
-                    <LibraryAddSharp/>
-                </Icon>
-                Добавить
+            <n-button @click="isModalShow = true">
+                Создать
             </n-button>
-        </n-space>
-        <n-space>
             <n-button @click="deleteManyRows"
             >
                 <Icon :size="24">
@@ -134,6 +157,39 @@ const addCategory = async () => {
             *Сохрание при клике вне поля ввода
         </small>
     </n-space>
+    <n-modal
+        v-model:show="isModalShow"
+        class="custom-card"
+        preset="card"
+        :style="{ width: '600px'}"
+        title="Добавить категорию"
+        :bordered="false"
+        size="huge"
+    >
+        <n-upload
+            action="http://localhost:3000/api/image"
+            :default-file-list="fileList"
+            :multiple="false"
+            @finish="uploadFinish"
+            list-type="image-card"
+            name="file"
+            :max="1"
+        >
+            Добавить фото
+        </n-upload>
+        <n-divider/>
+        <n-space>
+            <n-input v-model:value="category.name"
+                     placeholder="Название"
+            />
+            <n-button @click="addCategory">
+                <Icon size="24">
+                    <LibraryAddSharp/>
+                </Icon>
+                Добавить
+            </n-button>
+        </n-space>
+    </n-modal>
 </template>
 
 <style scoped>

@@ -1,14 +1,49 @@
 <script setup lang="ts">
-import { NSpace, NDataTable, NButton, NModal, NImage } from 'naive-ui'
+import { NSpace, NDataTable, NButton, NModal, NImage, useMessage, DataTableRowKey, NInput } from 'naive-ui'
 import { ref, h } from "vue";
 import FormProduct from "./form/form-product.vue";
 import { useMenuStore } from "../store/store.menu.ts";
+import { DeleteRound } from "@vicons/material";
+import { Icon } from "@vicons/utils";
+import { axiosInstance } from "../main.ts";
 
 const store = useMenuStore()
 const { getProductList } = store
 const isModalShow = ref(false)
 const tableData = ref()
+
+tableData.value = await getProductList({ include: { image: true }})
+const checkedRowKeys = ref<DataTableRowKey[]>([])
+
+const message = useMessage()
+
 const columns = [
+    {
+        type: 'selection',
+        options: [
+            'all',
+            'none'
+        ],
+    },
+    {
+        type: 'expand',
+        expandable: (rowData) => rowData.name !== 'Jim Green',
+        renderExpand: (rowData, index) => {
+            return h(NInput, {
+                value: rowData.contain,
+                type: 'textarea',
+                autosize: true,
+                onUpdateValue (v) {
+                    rowData.contain = v
+                },
+                onBlur () {
+                    const id = rowData.id
+                    const contain = rowData.contain
+                    updateRow(index, id, contain)
+                }
+            })
+        }
+    },
     {
         title: '№',
         key: 'key',
@@ -20,25 +55,73 @@ const columns = [
         title: 'Фото',
         key: 'image',
         render: (_, index) => {
-            console.log(tableData.value[index])
-            return h(NImage, { src: tableData.value[index].image.link, width: 25 })
+            const src = tableData.value[index].image?.link ?? '/empty.jpeg'
+            return h(NImage, { src, width: 25 })
         }
     },
   {
     title: 'Название',
-    key: 'name'
-  },
-  {
-      title: 'Состав',
-      key: 'contain'
+    key: 'name',
+      render (row, index) {
+          return h(NInput, {
+              value: row.name,
+              onUpdateValue (v) {
+                  tableData.value[index].name = v
+              },
+              onBlur () {
+                  const id = tableData.value[index].id
+                  const name = tableData.value[index].name
+                  updateRow(index, id, name)
+              }
+          })
+      }
   },
     {
-        title: 'Цена',
-        key: 'price'
+        title: 'Цена (руб)',
+        key: 'price',
+        render (row, index) {
+            return h(NInput, {
+                value: row.price,
+                onUpdateValue (v) {
+                    tableData.value[index].price = v
+                },
+                onBlur () {
+                    const id = tableData.value[index].id
+                    const price = tableData.value[index].price
+                    updateRow(index, id, price)
+                }
+            })
+        }
     }
 ]
 
-tableData.value = await getProductList()
+async function deleteManyRows() {
+    try {
+        const listId = checkedRowKeys.value.map((key) => {
+            return tableData.value[key].id
+        })
+
+        await axiosInstance.post(`/product/bulk/delete`, { listId })
+        for (const key: number of checkedRowKeys.value) {
+            tableData.value.splice(key, 1)
+        }
+
+        message.info('Товары удалены')
+    } catch (e) {
+        message.info(e)
+    }
+
+}
+
+async function updateRow(index: number, id: string, name: string) {
+    try {
+        await axiosInstance.patch(`/product/${id}`, { name })
+        message.info(`Товар #${index + 1} обновлен`)
+    } catch (e) {
+        message.info(e)
+    }
+
+}
 </script>
 
 <template>
@@ -46,6 +129,13 @@ tableData.value = await getProductList()
         <n-space vertical :size="12">
             <n-space>
                 <n-button @click="isModalShow = true">Добавить товар</n-button>
+                <n-button @click="deleteManyRows"
+                >
+                    <Icon :size="24">
+                        <DeleteRound/>
+                    </Icon>
+                    Удалить выбранные
+                </n-button>
             </n-space>
             <n-data-table
                 ref="dataTableInst"

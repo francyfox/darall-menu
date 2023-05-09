@@ -9,7 +9,7 @@ import { router } from "../routes";
   <section class="menu-edit">
 
       <div class="container">
-          <div class="col">
+          <div class="col _h-w-100">
               <div class="row _h-gap-md _h-ai-c _h-jc-sb _h-mb-2">
                   <h1>Редактор меню</h1>
 
@@ -39,12 +39,15 @@ import { router } from "../routes";
                   </div>
                   <div class="col">
                       <div class="card">
-                          <Suspense>
-                              <product-table/>
-                              <template #fallback>
-                                  Загрузка...
-                              </template>
-                          </Suspense>
+                          <n-space vertical :size="12">
+                              <div class="_t-fz-h4">Товары</div>
+                              <Suspense>
+                                  <product-table/>
+                                  <template #fallback>
+                                      Загрузка...
+                                  </template>
+                              </Suspense>
+                          </n-space>
                       </div>
                   </div>
               </div>
