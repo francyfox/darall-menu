@@ -3,6 +3,12 @@ import { ref } from 'vue'
 import { FormInst, useMessage, NFormItem, NInput, NForm, NButton, NSpace } from 'naive-ui'
 import { router } from "../../routes";
 import { axiosInstance } from "../../main.ts";
+import { useUserStore } from "../../store/store.user.ts";
+import { storeToRefs } from "pinia";
+
+const store = useUserStore()
+const { updateLS } = store
+const { user } = storeToRefs(store)
 
 const formRef = ref<FormInst | null>(null)
 const message = useMessage()
@@ -26,20 +32,26 @@ const rules = {
         message: 'Минимум 6 символов'
     }
 }
-
-console.log(axiosInstance.defaults.baseURL)
 function handleSubmit(e: MouseEvent) {
     e.preventDefault()
     isLoading.value = true
     formRef.value?.validate(async (errors) => {
         if (!errors) {
             try {
-                const { accessToken, refreshToken } = await axiosInstance.post(`user`, formData.value)
+                const response = await axiosInstance.post(`user`, formData.value)
+                const { accessToken, refreshToken } = response?.data as { accessToken: string, refreshToken: string }
+                user.value = {
+                    accessToken,
+                    refreshToken,
+                    email: formData.value.email
+                }
+                updateLS()
 
                 message.success('Форма успешно отправлена')
                 await router.push('/menu-edit')
-            } catch (e) {
+            } catch (e: any) {
                 console.log(e)
+
                 message.error(e.message)
             }
         } else {

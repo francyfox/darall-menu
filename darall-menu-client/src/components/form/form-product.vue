@@ -13,15 +13,16 @@ import {
     useMessage
 } from 'naive-ui'
 import type { UploadFileInfo } from 'naive-ui'
-import { Ref, ref, toRaw } from "vue";
+import { Ref, ref } from "vue";
 import { useMenuStore } from "../../store/store.menu.ts";
 import { storeToRefs } from "pinia";
 import { axiosInstance } from "../../main.ts";
-import { router } from "../../routes";
+
+type categoryOptionItem = { label: string, value: string}
 
 const store = useMenuStore()
 const { collectionRef } = storeToRefs(store)
-const categoryOptions = ref([])
+const categoryOptions: Ref<categoryOptionItem[]> = ref([])
 
 categoryOptions.value = collectionRef.value.map((i) => ({
     label: i.name,
@@ -101,7 +102,7 @@ async function handleSubmit(e: MouseEvent) {
         await axiosInstance.post(`/product` , formData.value.product)
         message.success('Форма отправлена!')
         window.location.reload()
-    } catch (e) {
+    } catch (e: any) {
         message.error(`Форма заполнена неверно ${e.message}`)
     }
 }

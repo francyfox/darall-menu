@@ -3,6 +3,12 @@ import ProductTable from "../components/product-table.vue";
 import CategoryList from "../components/category-list.vue";
 import { NSpace, NButton } from 'naive-ui'
 import { router } from "../routes";
+import UserSettings from "../components/user-settings.vue";
+import { useUserStore } from "../store/store.user.ts";
+import { storeToRefs } from "pinia";
+
+const store = useUserStore()
+const { user } = storeToRefs(store)
 </script>
 
 <template>
@@ -19,6 +25,7 @@ import { router } from "../routes";
                       >
                           Вернуться в меню
                       </n-button>
+                      <user-settings :email="user.email"/>
                   </n-space>
               </div>
               <div class="row _h-gap-md">

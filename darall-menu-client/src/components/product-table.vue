@@ -1,8 +1,17 @@
 <script setup lang="ts">
-import { NSpace, NDataTable, NButton, NModal, NImage, useMessage, DataTableRowKey, NInput } from 'naive-ui'
+import {
+    NSpace,
+    NDataTable,
+    NButton,
+    NModal,
+    NImage,
+    useMessage,
+    DataTableRowKey,
+    NInput
+} from 'naive-ui'
 import { ref, h } from "vue";
 import FormProduct from "./form/form-product.vue";
-import { useMenuStore } from "../store/store.menu.ts";
+import { ProductItem, useMenuStore } from "../store/store.menu.ts";
 import { DeleteRound } from "@vicons/material";
 import { Icon } from "@vicons/utils";
 import { axiosInstance } from "../main.ts";
@@ -17,7 +26,7 @@ const checkedRowKeys = ref<DataTableRowKey[]>([])
 
 const message = useMessage()
 
-const columns = [
+const columns: any = [
     {
         type: 'selection',
         options: [
@@ -27,7 +36,7 @@ const columns = [
     },
     {
         type: 'expand',
-        renderExpand: (rowData, index) => {
+        renderExpand: (rowData: ProductItem, index: number) => {
             return h(NInput, {
                 value: rowData.contain,
                 type: 'textarea',
@@ -46,14 +55,14 @@ const columns = [
     {
         title: '№',
         key: 'key',
-        render: (_, index) => {
+        render: (_: any, index: number) => {
             return `#${index + 1}`
         }
     },
     {
         title: 'Фото',
         key: 'image',
-        render: (_, index) => {
+        render: (_: any, index: number) => {
             const src = tableData.value[index].image?.link ?? '/empty.jpeg'
             return h(NImage, { src, width: 25 })
         }
@@ -61,7 +70,7 @@ const columns = [
   {
     title: 'Название',
     key: 'name',
-      render (row, index) {
+      render (row: ProductItem, index: number) {
           return h(NInput, {
               value: row.name,
               onUpdateValue (v) {
@@ -78,7 +87,7 @@ const columns = [
     {
         title: 'Цена (руб)',
         key: 'price',
-        render (row, index) {
+        render (row: ProductItem, index: number) {
             return h(NInput, {
                 value: row.price,
                 onUpdateValue (v) {
@@ -103,12 +112,12 @@ async function deleteManyRows() {
         console.log(checkedRowKeys.value)
 
         await axiosInstance.post(`/product/bulk/delete`, { listId })
-        for (const key: number of checkedRowKeys.value) {
+        for (const key of checkedRowKeys.value as number[]) {
             tableData.value.splice(key, 1)
         }
 
         message.info('Товары удалены')
-    } catch (e) {
+    } catch (e: any) {
         message.info(e)
     }
 
@@ -118,14 +127,9 @@ async function updateRow(index: number, id: string, data: object) {
     try {
         await axiosInstance.patch(`/product/${id}`, data)
         message.info(`Товар #${index + 1} обновлен`)
-    } catch (e) {
+    } catch (e: any) {
         message.info(e)
     }
-
-}
-
-function filterTable() {
-
 }
 </script>
 

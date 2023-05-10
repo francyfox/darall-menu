@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { Ref, ref } from "vue";
 import { axiosInstance } from "../main.ts";
 
-export type CategoryItem = {
+export interface CategoryItem {
   id: string
   name: string,
   image: {
@@ -10,6 +10,11 @@ export type CategoryItem = {
     name: string,
     link: string
   }
+}
+
+export interface ProductItem extends CategoryItem{
+  price: string,
+  contain: string,
 }
 export const useMenuStore = defineStore('menu', () => {
   const collectionRef: Ref<CategoryItem[]> = ref([])
@@ -27,7 +32,7 @@ export const useMenuStore = defineStore('menu', () => {
     const response = await axiosInstance.get(`/product`, { params })
     const { collections} = response.data as { collections: [], count: number }
 
-    return collections.map((element: CategoryItem, index) => ({
+    return collections.map((element: ProductItem, index) => ({
       ...element,
       key: index
     }))

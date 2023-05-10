@@ -16,7 +16,6 @@ import { Icon } from "@vicons/utils";
 import { axiosInstance } from "../main.ts";
 import { ref, h } from "vue";
 import { storeToRefs} from "pinia";
-import { router } from "../routes";
 
 const store = useMenuStore()
 const { getCategoryCollection } = store
@@ -42,17 +41,17 @@ function uploadFinish({ file, event }: { file: UploadFileInfo, event?: ProgressE
 
 async function deleteManyRows() {
     try {
-        const listId = checkedRowKeys.value.map((key) => {
+        const listId = checkedRowKeys.value.map((key: any) => {
             return collectionRef.value[key].id
         })
 
         await axiosInstance.post(`/category/bulk/delete`, { listId })
-        for (const key: number of checkedRowKeys.value) {
+        for (const key of checkedRowKeys.value as number[]) {
             collectionRef.value.splice(key, 1)
         }
 
         message.info('Категории удалены')
-    } catch (e) {
+    } catch (e: any) {
         message.info(e)
     }
 
@@ -62,7 +61,7 @@ async function updateRow(index: number, id: string, name: string) {
     try {
         await axiosInstance.patch(`/category/${id}`, { name })
         message.info(`Категория #${index + 1} обновлена`)
-    } catch (e) {
+    } catch (e: any) {
         message.info(e)
     }
 
@@ -81,14 +80,14 @@ const createColumns = (): DataTableColumns<RowData> => [
     {
         title: '№',
         key: 'index',
-        render: (_, index) => {
+        render: (_: any, index: number) => {
             return `#${index + 1}`
         }
     },
     {
         title: 'Фото',
         key: 'image',
-        render: (_, index) => {
+        render: (_: any, index: number) => {
             const src = collectionRef.value[index].image?.link ?? '/empty.jpeg'
             return h(NImage, { src, width: 25 })
         }
@@ -120,11 +119,10 @@ function handleCheck (rowKeys: DataTableRowKey[]) {
 }
 const addCategory = async () => {
     try {
-        const response = await axiosInstance.post(`/category`, category.value)
-        const { item } = response.data
+        await axiosInstance.post(`/category`, category.value)
         message.create('Добавлена категория')
         window.location.reload()
-    } catch (e) {
+    } catch (e: any) {
         message.error(e)
     }
 }
@@ -155,7 +153,7 @@ const addCategory = async () => {
             />
         </ul>
         <small>
-            *Сохрание при клике вне поля ввода
+            *Сохранение при клике вне поля ввода
         </small>
     </n-space>
     <n-modal

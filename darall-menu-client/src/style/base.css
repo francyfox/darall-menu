@@ -82,14 +82,13 @@ a:hover {
 body {
     margin: 0;
     min-width: 320px;
-    min-height: 100vh;
     background: url("../assets/food-6308045.svg") center center / contain no-repeat, linear-gradient(45deg, #27284e, #a264ff);
 }
 
 .security, .menu {
     display: flex;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 
@@ -111,9 +110,9 @@ button:focus-visible {
 }
 
 .card {
+    padding: 1.5em;
     display: flex;
     flex-direction: column;
-    padding: 2em;
     background: rgba(0, 0, 0, 0.05);
     border-radius: 5px;
     box-sizing: border-box;
@@ -132,6 +131,11 @@ body {
     position: relative;
 }
 
+section {
+    padding-top: 2em;
+    padding-bottom: 2em;
+    box-sizing: border-box;
+}
 
 section, header, footer {
     display: flex;
@@ -214,18 +218,16 @@ nav {
 .menu--card-list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
+    gap: 20px;
     height: 100%;
     box-sizing: border-box;
 
     .card {
-        padding-left: 0;
-        padding-right: 0;
+        padding: 0;
         background: transparent;
     }
 }
 
 .menu .container {
     height: 100%;
-    overflow-y: auto;
 }
