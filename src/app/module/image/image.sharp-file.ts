@@ -27,7 +27,7 @@ export async function imageSharpFile(file: Express.Multer.File) {
       .webp({ quality: 80 })
       .toFile(`${uploadDir}/${filename}`);
 
-  const link = `http://localhost:${CONFIG.EXPRESS_PORT}/uploads/${filename}`
+  const link = `/uploads/${filename}`
 
   const image = await db.image.create({
     data: {
