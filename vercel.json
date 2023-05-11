@@ -8,7 +8,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "./public/uploads/**",
+      "src": "./public/uploads/**/*",
       "use": "@vercel/static"
     }
   ],
@@ -16,10 +16,6 @@
     {
       "src": "/(.*)",
       "dest": "/dist"
-    },
-    {
-      "src": "/uploads/(.+)",
-      "dest": "/public/uploads/$1"
     }
   ]
 }
