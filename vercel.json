@@ -4,11 +4,19 @@
   "buildCommand": "npx prisma generate && pnpm run build",
   "builds": [
     {
+      "src": "./public/uploads/*.webp",
+      "use": "@vercel/static"
+    },
+    {
       "src": "./dist/*.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
+    {
+      "src": "/uploads",
+      "dest": "/public/uploads"
+    },
     {
       "src": "/(.*)",
       "dest": "/dist"
