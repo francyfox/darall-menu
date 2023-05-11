@@ -1,6 +1,7 @@
 {
   "version": 2,
-  "installCommand": "pnpm i && npx prisma generate",
+  "installCommand": "pnpm i",
+  "buildCommand": "npx prisma generate && pnpm run build",
   "builds": [
     {
       "src": "./dist/*.js",

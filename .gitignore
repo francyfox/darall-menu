@@ -7,3 +7,4 @@ node_modules
 /darall-menu-client/vite.config.js
 
 .idea
+dist
