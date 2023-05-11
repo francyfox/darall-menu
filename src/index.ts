@@ -6,7 +6,8 @@ import { Request, Response, NextFunction } from 'express'
 import bodyParser from 'body-parser'
 import cors, { CorsOptions } from 'cors'
 import helmet from "helmet";
-import { errorHandler, notFound } from "./app/middleware";
+import path from 'node:path';
+import { errorHandler } from "./app/middleware";
 
 const app: express.Application = express()
 const customHeaders = function (req: Request, res: Response, next: NextFunction) {
@@ -31,7 +32,8 @@ app.use(LoggerMiddleware)
 app.use(errorHandler)
 
 autoroutes(app, {
-  dir: './app/routes'
+
+  dir: path.resolve(__dirname,'./app/routes')
 })
 
 app.listen(CONFIG.EXPRESS_PORT, () => {

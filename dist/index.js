@@ -10,6 +10,7 @@ var logger_1 = require("./app/module/logger/logger");
 var body_parser_1 = __importDefault(require("body-parser"));
 var cors_1 = __importDefault(require("cors"));
 var helmet_1 = __importDefault(require("helmet"));
+var node_path_1 = __importDefault(require("node:path"));
 var middleware_1 = require("./app/middleware");
 var app = (0, express_1.default)();
 var customHeaders = function (req, res, next) {
@@ -30,7 +31,7 @@ app.use(logger_1.LoggerMiddleware);
 // app.use(notFound)
 app.use(middleware_1.errorHandler);
 (0, express_automatic_routes_1.default)(app, {
-    dir: './app/routes'
+    dir: node_path_1.default.resolve(__dirname, './app/routes')
 });
 app.listen(env_config_1.CONFIG.EXPRESS_PORT, function () {
     logger_1.Logger.debug("Server is up and running @\n         http://localhost:".concat(env_config_1.CONFIG.EXPRESS_PORT, "/"));
