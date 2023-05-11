@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { format, transports, addColors, createLogger } from 'winston'
 import { CONFIG } from "../../env.config";
 import { LoggerMiddleware } from "./logger.middleware";
@@ -30,10 +31,10 @@ const winstonFormat = format.combine(
 const winstonTransports = [
   new transports.Console(),
   new transports.File({
-    filename: 'logs/error.log',
+    filename: path.resolve(__dirname, '../../logs/error.log'),
     level: 'error',
   }),
-  new transports.File({ filename: 'logs/all.log' }),
+  new transports.File({ filename: path.resolve(__dirname, '../../logs/all.log') }),
 ]
 
 export const Logger = createLogger({
