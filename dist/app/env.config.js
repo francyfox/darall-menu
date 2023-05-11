@@ -10,4 +10,3 @@ exports.CONFIG = {
     JWT_ACCESS_SECRET: (_b = (_e = process.env).JWT_ACCESS_SECRET) !== null && _b !== void 0 ? _b : (_e.JWT_ACCESS_SECRET = ''),
     JWT_REFRESH_SECRET: (_c = (_f = process.env).JWT_REFRESH_SECRET) !== null && _c !== void 0 ? _c : (_f.JWT_REFRESH_SECRET = '')
 };
-//# sourceMappingURL=env.config.js.map

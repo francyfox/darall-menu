@@ -4,16 +4,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAuthenticated = exports.errorHandler = exports.notFound = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const env_config_1 = require("./env.config");
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var env_config_1 = require("./env.config");
 function notFound(req, res, next) {
     res.status(404);
-    const error = new Error(`🔍 - Not Found - ${req.originalUrl}`);
+    var error = new Error("\uD83D\uDD0D - Not Found - ".concat(req.originalUrl));
     next(error);
 }
 exports.notFound = notFound;
 function errorHandler(err, req, res, next) {
-    const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
+    var statusCode = res.statusCode !== 200 ? res.statusCode : 500;
     res.status(statusCode);
     res.json({
         message: err.message,
@@ -22,13 +22,13 @@ function errorHandler(err, req, res, next) {
 }
 exports.errorHandler = errorHandler;
 function isAuthenticated(req, res, next) {
-    const { authorization } = req.headers;
+    var authorization = req.headers.authorization;
     if (!authorization) {
         res.status(401);
         throw new Error('🚫 Un-Authorized 🚫');
     }
     try {
-        const token = authorization.split(' ')[1];
+        var token = authorization.split(' ')[1];
         req.payload = jsonwebtoken_1.default.verify(token, env_config_1.CONFIG.JWT_ACCESS_SECRET);
     }
     catch (err) {
@@ -41,4 +41,3 @@ function isAuthenticated(req, res, next) {
     return next();
 }
 exports.isAuthenticated = isAuthenticated;
-//# sourceMappingURL=middleware.js.map
