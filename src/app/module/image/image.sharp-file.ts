@@ -9,7 +9,7 @@ import { CONFIG } from "../../env.config";
 import { db } from "../../const";
 
 export async function imageSharpFile(file: Express.Multer.File) {
-  const uploadDir = path.resolve(__dirname, '../../../public/uploads')
+  const uploadDir = path.resolve(__dirname, '../../../../public/uploads')
   const filename = `${Date.now()}.webp`
 
   console.log(uploadDir)

@@ -45,7 +45,6 @@ var sharp_1 = __importDefault(require("sharp"));
 // @ts-ignore
 var node_path_1 = __importDefault(require("node:path"));
 var promises_1 = require("node:fs/promises");
-var env_config_1 = require("../../env.config");
 var const_1 = require("../../const");
 function imageSharpFile(file) {
     return __awaiter(this, void 0, void 0, function () {
@@ -53,7 +52,7 @@ function imageSharpFile(file) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    uploadDir = node_path_1.default.resolve(__dirname, '../../../public/uploads');
+                    uploadDir = node_path_1.default.resolve(__dirname, '../../../../public/uploads');
                     filename = "".concat(Date.now(), ".webp");
                     console.log(uploadDir);
                     _a.label = 1;
@@ -76,7 +75,7 @@ function imageSharpFile(file) {
                         .toFile("".concat(uploadDir, "/").concat(filename))];
                 case 5:
                     _a.sent();
-                    link = "http://localhost:".concat(env_config_1.CONFIG.EXPRESS_PORT, "/uploads/").concat(filename);
+                    link = "/uploads/".concat(filename);
                     return [4 /*yield*/, const_1.db.image.create({
                             data: {
                                 name: filename,
