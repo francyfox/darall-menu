@@ -12,7 +12,6 @@ export async function imageSharpFile(file: Express.Multer.File) {
   const uploadDir = path.resolve(__dirname, '../../../../public/uploads')
   const filename = `${Date.now()}.webp`
 
-  console.log(uploadDir)
   try {
     await access(uploadDir)
   } catch (e) {

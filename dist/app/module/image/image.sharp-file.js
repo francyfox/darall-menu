@@ -54,7 +54,6 @@ function imageSharpFile(file) {
                 case 0:
                     uploadDir = node_path_1.default.resolve(__dirname, '../../../../public/uploads');
                     filename = "".concat(Date.now(), ".webp");
-                    console.log(uploadDir);
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
