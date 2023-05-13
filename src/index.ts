@@ -19,8 +19,6 @@ const customHeaders = function (req: Request, res: Response, next: NextFunction)
 //   origin: [`http://localhost:${CONFIG.EXPRESS_PORT}`, 'http://localhost:5173/']
 // }
 
-console.log(__dirname + '/public')
-
 app.use('/uploads', express.static(path.resolve(__dirname, '../public/uploads')))
 app.use(cors({origin: '*'}))
 app.use(helmet())

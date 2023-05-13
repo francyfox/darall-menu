@@ -5,12 +5,22 @@ import sharp from "sharp";
 // @ts-ignore
 import path from 'node:path';
 import { mkdir, access } from 'node:fs/promises'
+import s3 from "../../utils/s3";
 import { CONFIG } from "../../env.config";
-import { db } from "../../const";
 
-export async function imageSharpFile(file: Express.Multer.File) {
+
+export async function s3Upload(file: Express.Multer.File) {
+  const data = await s3.upload({
+    Bucket: CONFIG.S3_BUCKET,
+    Key: file.originalname,
+    ContentType: path.extname(file.originalname),
+    Body: file.buffer
+  }).promise()
+
+  return data.Location
+}
+export async function imageSharpFile(file: Express.Multer.File, filename: string) {
   const uploadDir = path.resolve(__dirname, '../../../../public/uploads')
-  const filename = `${Date.now()}.webp`
 
   try {
     await access(uploadDir)
@@ -26,14 +36,5 @@ export async function imageSharpFile(file: Express.Multer.File) {
       .webp({ quality: 80 })
       .toFile(`${uploadDir}/${filename}`);
 
-  const link = `/uploads/${filename}`
-
-  const image = await db.image.create({
-    data: {
-      name: filename,
-      link
-    }
-  })
-
-  return { image }
+  return `/uploads/${filename}`
 }
