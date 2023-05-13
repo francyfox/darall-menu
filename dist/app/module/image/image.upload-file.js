@@ -60,7 +60,7 @@ function s3Upload(file) {
                     }).promise()];
                 case 1:
                     data = _a.sent();
-                    return [2 /*return*/, data.Location];
+                    return [2 /*return*/, "https://".concat(env_config_1.CONFIG.S3_BUCKET, ".sirv.com/").concat(file.originalname)];
             }
         });
     });

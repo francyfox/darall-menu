@@ -17,7 +17,7 @@ export async function s3Upload(file: Express.Multer.File) {
     Body: file.buffer
   }).promise()
 
-  return data.Location
+  return `https://${CONFIG.S3_BUCKET}.sirv.com/${file.originalname}`
 }
 export async function imageSharpFile(file: Express.Multer.File, filename: string) {
   const uploadDir = path.resolve(__dirname, '../../../../public/uploads')
