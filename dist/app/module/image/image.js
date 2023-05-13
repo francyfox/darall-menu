@@ -39,53 +39,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.imageSharpFile = void 0;
-// @ts-ignore
-var sharp_1 = __importDefault(require("sharp"));
-// @ts-ignore
-var node_path_1 = __importDefault(require("node:path"));
-var promises_1 = require("node:fs/promises");
+exports.imageUploadedLink = void 0;
 var const_1 = require("../../const");
-function imageSharpFile(file) {
+var image_upload_file_1 = require("./image.upload-file");
+var node_path_1 = __importDefault(require("node:path"));
+function imageUploadedLink(file) {
     return __awaiter(this, void 0, void 0, function () {
-        var uploadDir, filename, e_1, link, image;
+        var filename, link, image;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    uploadDir = node_path_1.default.resolve(__dirname, '../../../../public/uploads');
-                    filename = "".concat(Date.now(), ".webp");
-                    _a.label = 1;
+                    filename = file.originalname.replace(node_path_1.default.extname(file.originalname), '');
+                    return [4 /*yield*/, (0, image_upload_file_1.s3Upload)(file)];
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, (0, promises_1.access)(uploadDir)];
-                case 2:
-                    _a.sent();
-                    return [3 /*break*/, 4];
-                case 3:
-                    e_1 = _a.sent();
-                    (0, promises_1.mkdir)(uploadDir);
-                    return [3 /*break*/, 4];
-                case 4: return [4 /*yield*/, (0, sharp_1.default)(file.buffer)
-                        .resize(800, 800, {
-                        fit: sharp_1.default.fit.cover,
-                        withoutEnlargement: true
-                    })
-                        .webp({ quality: 80 })
-                        .toFile("".concat(uploadDir, "/").concat(filename))];
-                case 5:
-                    _a.sent();
-                    link = "/uploads/".concat(filename);
+                    link = _a.sent();
+                    if (link === null) {
+                        throw new Error('Error on file upload');
+                    }
                     return [4 /*yield*/, const_1.db.image.create({
                             data: {
                                 name: filename,
                                 link: link
                             }
                         })];
-                case 6:
+                case 2:
                     image = _a.sent();
                     return [2 /*return*/, { image: image }];
             }
         });
     });
 }
-exports.imageSharpFile = imageSharpFile;
+exports.imageUploadedLink = imageUploadedLink;

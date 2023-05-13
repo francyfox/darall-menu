@@ -20,7 +20,6 @@ var customHeaders = function (req, res, next) {
 // const corsOpt: CorsOptions = {
 //   origin: [`http://localhost:${CONFIG.EXPRESS_PORT}`, 'http://localhost:5173/']
 // }
-console.log(__dirname + '/public');
 app.use('/uploads', express_1.default.static(node_path_1.default.resolve(__dirname, '../public/uploads')));
 app.use((0, cors_1.default)({ origin: '*' }));
 app.use((0, helmet_1.default)());

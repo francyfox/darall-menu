@@ -39,43 +39,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploader = void 0;
+exports.imageSharpFile = exports.s3Upload = void 0;
 // @ts-ignore
-var multer_1 = __importDefault(require("multer"));
-var image_1 = require("../../../module/image/image");
-var storage = multer_1.default.memoryStorage();
-exports.uploader = (0, multer_1.default)({
-    storage: storage,
-    limits: {
-        fieldSize: 5 * 1024 * 1024 //  =< 5mb
-    }
-});
-exports.default = (function (express) { return ({
-    middleware: exports.uploader.single('file'),
-    post: function (request, response, next) { return __awaiter(void 0, void 0, void 0, function () {
-        var image, e_1;
+var sharp_1 = __importDefault(require("sharp"));
+// @ts-ignore
+var node_path_1 = __importDefault(require("node:path"));
+var promises_1 = require("node:fs/promises");
+var s3_1 = __importDefault(require("../../utils/s3"));
+var env_config_1 = require("../../env.config");
+function s3Upload(file) {
+    return __awaiter(this, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, s3_1.default.upload({
+                        Bucket: env_config_1.CONFIG.S3_BUCKET,
+                        Key: file.originalname,
+                        ContentType: node_path_1.default.extname(file.originalname),
+                        Body: file.buffer
+                    }).promise()];
+                case 1:
+                    data = _a.sent();
+                    return [2 /*return*/, data.Location];
+            }
+        });
+    });
+}
+exports.s3Upload = s3Upload;
+function imageSharpFile(file, filename) {
+    return __awaiter(this, void 0, void 0, function () {
+        var uploadDir, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 4, , 5]);
-                    if (!request.file) return [3 /*break*/, 2];
-                    return [4 /*yield*/, (0, image_1.imageUploadedLink)(request.file)];
+                    uploadDir = node_path_1.default.resolve(__dirname, '../../../../public/uploads');
+                    _a.label = 1;
                 case 1:
-                    image = (_a.sent()).image;
-                    response.status(200).json({
-                        item: image
-                    });
-                    return [3 /*break*/, 3];
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, (0, promises_1.access)(uploadDir)];
                 case 2:
-                    response.status(400);
-                    throw new Error('Field file not found');
-                case 3: return [3 /*break*/, 5];
-                case 4:
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
                     e_1 = _a.sent();
-                    next(e_1);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    (0, promises_1.mkdir)(uploadDir);
+                    return [3 /*break*/, 4];
+                case 4: return [4 /*yield*/, (0, sharp_1.default)(file.buffer)
+                        .resize(800, 800, {
+                        fit: sharp_1.default.fit.cover,
+                        withoutEnlargement: true
+                    })
+                        .webp({ quality: 80 })
+                        .toFile("".concat(uploadDir, "/").concat(filename))];
+                case 5:
+                    _a.sent();
+                    return [2 /*return*/, "/uploads/".concat(filename)];
             }
         });
-    }); }
-}); });
+    });
+}
+exports.imageSharpFile = imageSharpFile;
